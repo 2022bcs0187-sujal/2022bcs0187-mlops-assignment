@@ -1,0 +1,65 @@
+name: MLOps CI Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+
+    steps:
+    
+    # 1. Checkout code
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Setup Python
+    - name: Setup Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.10
+
+    # 3. Install dependencies
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+
+    # 4. Setup DVC
+    - name: Install DVC
+      run: pip install dvc[s3]
+
+    # 5. Configure AWS (VERY IMPORTANT)
+    - name: Configure AWS Credentials (AWS Academy)
+      run: |
+        mkdir -p ~/.aws
+        echo "[default]" > ~/.aws/credentials
+        echo "aws_access_key_id=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.aws/credentials
+        echo "aws_secret_access_key=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.aws/credentials
+        echo "aws_session_token=${{ secrets.AWS_SESSION_TOKEN }}" >> ~/.aws/credentials
+
+        echo "[default]" > ~/.aws/config
+        echo "region=${{ secrets.AWS_REGION }}" >> ~/.aws/config
+
+    # 6. Pull data from DVC
+    - name: DVC Pull
+      run: dvc pull
+
+    # 7. Run pipeline
+    - name: Run DVC Pipeline
+      run: dvc repro
+
+    # 8. Read metrics
+    - name: Read metrics
+      id: metrics
+      run: |
+        ACC=$(python -c "import json; print(json.load(open('reports/metrics.json'))['accuracy'])")
+        echo "accuracy=$ACC" >> $GITHUB_OUTPUT
+
+    # 9. Show summary (IMPORTANT FOR ASSIGNMENT)
+    - name: Job Summary
+      run: |
+        echo "## 🎯 Model Training Summary" >> $GITHUB_STEP_SUMMARY
+        echo "Name: Sujal Chodvadiya" >> $GITHUB_STEP_SUMMARY
+        echo "Roll No: 2022BCS0187" >> $GITHUB_STEP_SUMMARY
+        echo "Accuracy: ${{ steps.metrics.outputs.accuracy }}" >> $GITHUB_STEP_SUMMARY
