@@ -1,0 +1,39 @@
+schema: '2.0'
+stages:
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/loan_approval_dataset.csv
+      hash: md5
+      md5: 3d8ecb6acc324137fe4affc13655564f
+      size: 384337
+    - path: src/preprocess.py
+      hash: md5
+      md5: a570696080af789bdfd3b828f4495a33
+      size: 615
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: bf0708227b99ff6d764de5303a9b7063.dir
+      size: 412154
+      nfiles: 2
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/X.csv
+      hash: md5
+      md5: c3a855ede90048264100f3338d553c33
+      size: 365182
+    - path: data/processed/y.csv
+      hash: md5
+      md5: d78cd481992ab909bc9bddc2d9258dda
+      size: 46972
+    - path: src/train.py
+      hash: md5
+      md5: c840a21b909e8ee83956a59141c9c192
+      size: 1323
+    outs:
+    - path: reports/metrics.json
+      hash: md5
+      md5: 92be8b31f94556c29667fac859f9cd5f
+      size: 118
