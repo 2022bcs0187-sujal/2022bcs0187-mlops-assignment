@@ -82,7 +82,7 @@ else:
 # ==============================
 # MLFLOW
 # ==============================
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+# mlflow.set_tracking_uri("file:./mlruns")
 mlflow.set_experiment("2022BCS0187_experiment")
 
 with mlflow.start_run():
