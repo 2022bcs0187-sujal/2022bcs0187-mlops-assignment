@@ -16,7 +16,7 @@ import mlflow.sklearn
 # ==============================
 DATA_PATH = "data/loan_approval_dataset_v1.csv"
 MODEL_TYPE = "rf"
-N_ESTIMATORS = 100
+N_ESTIMATORS = 200
 FEATURE_SET = "all"
 
 NAME = "Sujal Chodvadiya"
