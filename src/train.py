@@ -15,8 +15,8 @@ import mlflow.sklearn
 # CONFIG (CHANGE PER RUN)
 # ==============================
 DATA_PATH = "data/loan_approval_dataset.csv"
-MODEL_TYPE = "rf"
-N_ESTIMATORS = 100
+MODEL_TYPE = "lr"
+N_ESTIMATORS = 100   # (ignored for LR)
 FEATURE_SET = "reduced"
 
 NAME = "Sujal Chodvadiya"
