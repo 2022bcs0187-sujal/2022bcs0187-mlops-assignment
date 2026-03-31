@@ -49,14 +49,18 @@ def predict(data: LoanInput):
     if model is None:
         return {"error": "Model not loaded"}
 
-    # Convert to DataFrame
     input_data = pd.DataFrame([data.dict()])
+    input_data.columns = input_data.columns.str.strip()
 
-    # Prediction
+    input_data = pd.get_dummies(input_data)
+
+    # Align columns
+    input_data = input_data.reindex(columns=model.feature_names_in_, fill_value=0)
+
     prediction = model.predict(input_data)[0]
 
     return {
         "prediction": str(prediction),
-        "name": NAME,
-        "roll_no": ROLL_NO
+        "name": "Sujal Chodvadiya",
+        "roll_no": "2022BCS0187"
     }

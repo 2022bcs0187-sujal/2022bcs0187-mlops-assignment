@@ -1,0 +1,23 @@
+artifact_path: file:C:/Users/Sujal20/Desktop/Academics/CSS 426/2022bcs0187-mlops-assignment/mlruns/1/models/m-2bc80bcf022a4c229ce8b8a6acc397a5/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.14.2
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.10.1
+model_id: m-2bc80bcf022a4c229ce8b8a6acc397a5
+model_size_bytes: 1212087
+model_uuid: m-2bc80bcf022a4c229ce8b8a6acc397a5
+prompts: null
+run_id: 3f4eb70ff3b64c5e973b1b10e658d78d
+utc_time_created: '2026-03-31 19:34:20.725237'

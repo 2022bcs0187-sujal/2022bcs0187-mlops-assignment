@@ -26,6 +26,7 @@ ROLL_NO = "2022BCS0187"
 # LOAD DATA
 # ==============================
 df = pd.read_csv(DATA_PATH)
+df.columns = df.columns.str.strip()   # ✅ FIX
 df = df.dropna()
 
 # ==============================
@@ -81,6 +82,7 @@ else:
 # ==============================
 # MLFLOW
 # ==============================
+mlflow.set_tracking_uri("sqlite:///mlflow.db")
 mlflow.set_experiment("2022BCS0187_experiment")
 
 with mlflow.start_run():
