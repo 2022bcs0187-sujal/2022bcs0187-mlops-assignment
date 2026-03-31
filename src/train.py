@@ -6,6 +6,8 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
 import mlflow
 import mlflow.sklearn
+import joblib
+
 
 # Load processed data
 X = pd.read_csv("data/processed/X.csv")
@@ -21,6 +23,8 @@ with mlflow.start_run():
 
     model = RandomForestClassifier(n_estimators=100)
     model.fit(X_train, y_train)
+    os.makedirs("model", exist_ok=True)
+    joblib.dump(model, "model.joblib")
 
     preds = model.predict(X_test)
 
