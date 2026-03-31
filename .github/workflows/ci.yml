@@ -23,13 +23,15 @@ jobs:
     # 3. Install dependencies
     - name: Install dependencies
       run: |
+        pip install --upgrade pip
+        pip install pathspec==0.11.2
         pip install -r requirements.txt
 
     # 4. Setup DVC
     - name: Install DVC
       run: pip install dvc[s3]
 
-    # 5. Configure AWS (VERY IMPORTANT)
+    # 5. Configure AWS
     - name: Configure AWS Credentials (AWS Academy)
       run: |
         mkdir -p ~/.aws
@@ -49,17 +51,63 @@ jobs:
     - name: Run DVC Pipeline
       run: dvc repro
 
-    # 8. Read metrics
-    - name: Read metrics
-      id: metrics
+    # 8. Read current accuracy
+    - name: Read current accuracy
+      id: current
       run: |
         ACC=$(python -c "import json; print(json.load(open('reports/metrics.json'))['accuracy'])")
         echo "accuracy=$ACC" >> $GITHUB_OUTPUT
 
-    # 9. Show summary (IMPORTANT FOR ASSIGNMENT)
+    # 9. Load best accuracy (default = 0)
+    - name: Load best accuracy
+      id: best
+      run: |
+        if [ -f best_metrics.json ]; then
+          BEST=$(python -c "import json; print(json.load(open('best_metrics.json'))['accuracy'])")
+        else
+          BEST=0
+        fi
+        echo "best=$BEST" >> $GITHUB_OUTPUT
+
+    # 10. Compare accuracy
+    - name: Compare accuracy
+      id: compare
+      run: |
+        if (( $(echo "${{ steps.current.outputs.accuracy }} > ${{ steps.best.outputs.best }}" | bc -l) )); then
+          echo "improved=true" >> $GITHUB_OUTPUT
+        else
+          echo "improved=false" >> $GITHUB_OUTPUT
+        fi
+
+    # 11. Update best accuracy (if improved)
+    - name: Update best accuracy
+      if: steps.compare.outputs.improved == 'true'
+      run: |
+        cp reports/metrics.json best_metrics.json
+
+    # 12. Docker Login
+    - name: Docker Login
+      if: steps.compare.outputs.improved == 'true'
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    # 13. Build Docker image
+    - name: Build Docker image
+      if: steps.compare.outputs.improved == 'true'
+      run: |
+        docker build -t ${{ secrets.DOCKER_USERNAME }}/2022bcs0187-mlops:latest .
+
+    # 14. Push Docker image
+    - name: Push Docker image
+      if: steps.compare.outputs.improved == 'true'
+      run: |
+        docker push ${{ secrets.DOCKER_USERNAME }}/2022bcs0187-mlops:latest
+
+    # 15. Summary (FINAL OUTPUT)
     - name: Job Summary
       run: |
         echo "## 🎯 Model Training Summary" >> $GITHUB_STEP_SUMMARY
         echo "Name: Sujal Chodvadiya" >> $GITHUB_STEP_SUMMARY
         echo "Roll No: 2022BCS0187" >> $GITHUB_STEP_SUMMARY
-        echo "Accuracy: ${{ steps.metrics.outputs.accuracy }}" >> $GITHUB_STEP_SUMMARY
+        echo "Current Accuracy: ${{ steps.current.outputs.accuracy }}" >> $GITHUB_STEP_SUMMARY
+        echo "Best Accuracy: ${{ steps.best.outputs.best }}" >> $GITHUB_STEP_SUMMARY
+        echo "Improved: ${{ steps.compare.outputs.improved }}" >> $GITHUB_STEP_SUMMARY                   
