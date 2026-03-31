@@ -59,7 +59,7 @@ else:
     selected_features = reduced_features
 
 X = df[selected_features]
-y = df[" loan_status"]
+y = df["loan_status"]
 
 # Encode categorical
 X = pd.get_dummies(X)
