@@ -33,24 +33,24 @@ df = df.dropna()
 # FEATURE SELECTION
 # ==============================
 all_features = [
-    " no_of_dependents",
-    " education",
-    " self_employed",
-    " income_annum",
-    " loan_amount",
-    " loan_term",
-    " cibil_score",
-    " residential_assets_value",
-    " commercial_assets_value",
-    " luxury_assets_value",
-    " bank_asset_value"
+    "no_of_dependents",
+    "education",
+    "self_employed",
+    "income_annum",
+    "loan_amount",
+    "loan_term",
+    "cibil_score",
+    "residential_assets_value",
+    "commercial_assets_value",
+    "luxury_assets_value",
+    "bank_asset_value"
 ]
 
 reduced_features = [
-    " income_annum",
-    " loan_amount",
-    " cibil_score",
-    " bank_asset_value"
+    "income_annum",
+    "loan_amount",
+    "cibil_score",
+    "bank_asset_value"
 ]
 
 if FEATURE_SET == "all":
